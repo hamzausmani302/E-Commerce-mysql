@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const router = express.Router();
-const DB = require('./Service/dbService');
+const DB = require('./Service/dbconfig');
 
 
 
