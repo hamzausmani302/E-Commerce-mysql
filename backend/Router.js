@@ -12,7 +12,7 @@ router.get('/' , (req,res)=>{
 })
 
 router.get('/customers' , (req,res)=>{
-    const resp= DB.get_all().then((data)=>{return res.json(data)});
+    const resp= DB.get_all().then((data)=>{return res.json(data)}).catch((err)=>{return res.send({error : err.message})});
     
 })
 

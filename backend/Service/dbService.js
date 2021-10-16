@@ -9,8 +9,8 @@ let instance = null;
   const connection = mysql.createConnection({
     host: 'localhost',
     port : process.env.db_port,
-    user: process.env.MYSQL_USERNAME,
-    password:process.env.MYSQL_PASSWORD,
+    user: 'user',
+    password:'password',
     database : "test"
   });
   connection.connect((err)=>{
@@ -28,9 +28,23 @@ class DBDAO{
     static get_instance(){
       return instance;
     }
+    static async insert_admin(email , password , date , role){
+        
+      
+      const pr = await new Promise(
+          (resolve , reject) => {
+            connection.query("INSERT INTO ADMINISTRATOR VALUES(?,?,?,?)" , [email , password , date , role] , (err,result)=>{
+              if(err){reject(new Error(err.message))}
+              resolve(result);
+            })
+          }
+        );
+        return pr;
+    }
+
     static async  get_all(){
       const pr = await new Promise((resolve, reject)=>{
-        connection.query("SELECT * FROM customers" , (err,result)=>{
+        connection.query("INSERT INTO CUSTOMER values(?,?,?,?,?,?,?,?)",[115 , "machar bazaar" , "2013-07-29" , "alihamza@gmail.com" , "ali" , "hamza" , "password" , "03002673170" ] , (err,result)=>{
           if(err){reject(new Error(err.message))}
           resolve(result);
           
