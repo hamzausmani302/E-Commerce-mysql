@@ -10,6 +10,9 @@ class UserController{
     static Signup(req , res){
 
     }
+    static SiginPage(req,res){
+        res.render(path.join(__dirname , '../views/UserPage.html'));
+    }
     
 
 }
