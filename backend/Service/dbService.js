@@ -29,8 +29,47 @@ class USERDAO{
   static get_instance(){
     return instance;
   }
-  static async insert_User(){
+  static async fetch_from_email(email ){
+    const pr = await new Promise(
+      (resolve , reject) => {
+        
+        connection.query("SELECT * FROM CUSTOMERS WHERE EMAIL = ? " , [email  ] , (err,result)=>{
+          if(err){reject(new Error(err.message))}
+          
+          resolve(result);
+        })
+      }
+    );
+    return pr;
+  }
 
+  static async Login(email , password){
+    const pr = await new Promise(
+      (resolve , reject) => {
+        
+        connection.query("SELECT * FROM CUSTOMERS WHERE EMAIL = ? AND PASSWORD = ?" , [email , password ] , (err,result)=>{
+          if(err){reject(new Error(err.message))}
+          
+          resolve(result);
+        })
+      }
+    );
+    return pr;
+  }
+    
+  static async insert_User(userID,Fname,Lname,userEmail,password,address,phoneNo, dateCreated){
+        
+      
+      const pr = await new Promise(
+          (resolve , reject) => {
+            connection.query("INSERT INTO CUSTOMERS VALUES(?,?,?,?,?,?,?,?)" , [userID,Fname,Lname,userEmail,password,address,phoneNo, dateCreated] , (err,result)=>{
+              if(err){reject(new Error(err.message))}
+              resolve(result);
+            })
+          }
+        );
+        return pr;
+    
   }
 
   static async update_User(){
@@ -79,6 +118,20 @@ class DBDAO{
     static async get_All_Users(){
 
     }
+    static async fetch_from_email(email ){
+      const pr = await new Promise(
+        (resolve , reject) => {
+          
+          connection.query("SELECT * FROM ADMINISTRATOR WHERE EMAIL = ? " , [email  ] , (err,result)=>{
+            if(err){reject(new Error(err.message))}
+            
+            resolve(result);
+          })
+        }
+      );
+      return pr;
+    }
+  
     static async Login(email , password){
       const pr = await new Promise(
         (resolve , reject) => {

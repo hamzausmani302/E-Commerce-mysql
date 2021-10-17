@@ -8,7 +8,7 @@ dotenv.config();
 const BCRYPT_TOHASH = async (password)=>{
     
     let pr = new Promise((resolve, reject)=>{
-        bcrypt.hash(password, 10, function(err, hash) {
+        bcrypt.hash(password, 2, function(err, hash) {
             if(err){reject(err)}
             resolve(hash);
         });
@@ -17,10 +17,15 @@ const BCRYPT_TOHASH = async (password)=>{
 }
 
 const COMPARE_HASH = (password , hashDB)=>{
-    bcrypt.compare(myPlaintextPassword, hashDB, function(err, result) {
-        if(err){return null}
-        return result;
-    });
+    let pr = new Promise((resolve, reject)=>{
+        bcrypt.compare(password, hashDB, function(err, result) {
+            if(err){reject(err)};
+            resolve(result);
+            
+        });
+    })
+   return pr;
+    
 
 }
 const JWTAUTH_SIGN = (payload )=>{
