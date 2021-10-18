@@ -4,12 +4,24 @@ const dotenv = require('dotenv');
 const {SIGN , HASH,COMPARE_HASH} = require('../Service/HELPERS/SecurityHelper');
 const Product = require('../Models/Product');
 class ProductController{
-
+    static Add_Page(req,res){
+        res.sendFile(path.join(__dirname , '../views/ProductPage.html'));
+    }
     static add_Product(req,res){
-        let product = new Product(0,req.body.PRODUCT_NAME , req.body.CATEGORYID , req.body.description , req.body.tags , 
-            req.body.imageSource , req.body.Supplier , req.body.PIECES , req.body.ENCODED_ID);
-        console.log(product);    
-
+        let product = new Product(0,req.body.PRODUCT_NAME , parseInt(req.body.CATEGORYID) , req.body.description , req.body.tags , 
+            req.body.imageSource , parseInt(req.body.Supplier) , parseInt(req.body.PIECES) , 'testing');
+        console.log(product);
+        PRODUCTDAO.Add_a_Product(product)
+        .then(data=>{
+            success = false;
+            rowsUpdated = 0;
+            if(data.affectedRows > 0){
+                success = true;
+                rowsUpdated = data.affectedRows;
+            }
+            res.status(200).send({success : false , rowsUpdated : 0})
+        })
+        .catch(err=>{res.status(400).send({error : err.message})})
     }
     
     static get_a_product(req,res){

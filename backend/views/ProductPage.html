@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>ADD PRODCUT</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src='main.js'></script>
+</head>
+
+<body>
+    <form method="post" action="/api/products/add">
+        <input placeholder="Name " type="text" id="PRODUCT_NAME" name="PRODUCT_NAME" ></input>
+        <input type="number" placeholder="CATEGORY ID" id="CATEGORY" name="CATEGORYID"> </input>
+        <input type="text" placeholder="Description" id="description" name="description"> </input>
+        <input type="text" placeholder="tags" id="tags" name="tags"> </input>
+        <input type="file" placeholder="upload image" id="image" name="imageSource"> </input>
+        <input type="number" placeholder="SUPPLIER ID" id="supplier" name="Supplier"> </input>
+        <input type="number" placeholder="Quanitity" id="quantity" name="PIECES"> </input>
+
+        
+
+        
+        <input type="submit" />
+    </form>
+</body>
+
+</html>

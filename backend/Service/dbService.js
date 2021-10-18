@@ -109,8 +109,9 @@ class ProductDAO{
   
   static async Add_a_Product(product){
       const pr = await new Promise((resolve , reject) => {
-          connection.query(`INSERT INTO PRODUCT SET PRODUCT_NAME=? , CATEGORYID=? , 
+          connection.query(`INSERT INTO PRODUCT SET PRODUCT_ID = ? ,PRODUCT_NAME=? , CATEGORYID=? , 
           DESCRIPTION=? , TAGS= ? , IMAGESOURCE = ? ,SUPPLIER_ID = ? , PIECES = ? , ENCODED_ID= ?` , [
+            112,
             product.PRODUCT_NAME,
             product.CATEGORYID,
             product.DESCRIPTION,
@@ -121,7 +122,8 @@ class ProductDAO{
             product.ENCODED_ID
           
           ] , (err,result)=>{
-            if(err){reject(err.message)}
+            if(err){reject(new Error(err.message))}
+            console.log(result);
             resolve(result);
           })
       })
