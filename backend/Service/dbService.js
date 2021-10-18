@@ -88,8 +88,56 @@ class ProductDAO{
   static get_instance(){
     return instance;
   }
+  static async Get_Products(){
+      const pr = await new Promise((resolve , reject) => {
+        connection.query("SELECT * FROM PRODUCT" , [] , (err,result) => {
+          if(err){reject(new Error(err.message))};
+          resolve(result);
+        })
+      })
+      return pr;
+  }
+  static async Get_a_Product(id){
+    const pr = await new Promise((resolve , reject) => {
+      connection.query("SELECT * FROM PRODUCT WHERE PRODUCT_ID=?" , [id] , (err,result) => {
+        if(err){reject(new Error(err.message))};
+        resolve(result);
+      })
+    })
+    return pr;
+  }
+  
+  static async Add_a_Product(product){
+      const pr = await new Promise((resolve , reject) => {
+          connection.query(`INSERT INTO PRODUCT SET PRODUCT_NAME=? , CATEGORYID=? , 
+          DESCRIPTION=? , TAGS= ? , IMAGESOURCE = ? ,SUPPLIER_ID = ? , PIECES = ? , ENCODED_ID= ?` , [
+            product.PRODUCT_NAME,
+            product.CATEGORYID,
+            product.DESCRIPTION,
+            product.TAGS,
+            product.IMAGESOURCE,
+            product.SUPPLIER_ID,
+            product.PIECES,
+            product.ENCODED_ID
+          
+          ] , (err,result)=>{
+            if(err){reject(err.message)}
+            resolve(result);
+          })
+      })
+      return pr;
+  }
+  static Remove_a_Product(product){
+
+  }
+
+  static update_a_product(id , product){
+
+  }
 
 }
+
+
 
 
 class CategoryDAO{
@@ -181,7 +229,8 @@ class DBDAO{
   
 
   
-  
+
  module.exports.DBDAO = DBDAO;
  module.exports.USERDAO = USERDAO;
  module.exports.PRODUCTDAO = ProductDAO;
+
