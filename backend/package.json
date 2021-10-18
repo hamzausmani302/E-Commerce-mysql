@@ -1,0 +1,24 @@
+{
+  "name": "store-backend-mysql",
+  "version": "1.0.0",
+  "description": "An ecommerce solution for local stores to shift their market to an online platform where more users can reach them",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ecommerce"
+  ],
+  "author": "hamza ibad areez",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mysql": "^2.18.1",
+    "mysql2": "^2.3.0"
+  }
+}
