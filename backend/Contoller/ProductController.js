@@ -31,13 +31,13 @@ class ProductController{
         console.log(product);
         PRODUCTDAO.Add_a_Product(product)
         .then(data=>{
-            success = false;
-            rowsUpdated = 0;
+            let success = false;
+            let rowsUpdated = 0;
             if(data.affectedRows > 0){
                 success = true;
                 rowsUpdated = data.affectedRows;
             }
-            res.status(200).send({success : false , rowsUpdated : 0})
+            res.status(200).send({success : success , rowsUpdated : rowsUpdated})
         })
         .catch(err=>{res.status(400).send({error : err.message})})
     }

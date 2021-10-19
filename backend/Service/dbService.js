@@ -109,9 +109,9 @@ class ProductDAO{
   
   static async Add_a_Product(product){
       const pr = await new Promise((resolve , reject) => {
-          connection.query(`INSERT INTO PRODUCT SET PRODUCT_ID = ? ,PRODUCT_NAME=? , CATEGORYID=? , 
+          connection.query(`INSERT INTO PRODUCT SET PRODUCT_NAME=? , CATEGORYID=? , 
           DESCRIPTION=? , TAGS= ? , IMAGESOURCE = ? ,SUPPLIER_ID = ? , PIECES = ? , ENCODED_ID= ?` , [
-            112,
+         
             product.PRODUCT_NAME,
             product.CATEGORYID,
             product.DESCRIPTION,
@@ -141,12 +141,8 @@ class ProductDAO{
       let query2 = " WHERE PRODUCT_ID = ?;";
       for (const key in product) {
           if(product[key] != undefined && product[key] != null && product[key] != "" ){
-              
               params.push(product[key]);
-              
               midquery += (key + "= ?,");
-              
-
           }
       }
       params.push(id);
@@ -169,6 +165,7 @@ class ProductDAO{
 
 
 
+
 class CategoryDAO{
   constructor(){
 
@@ -176,7 +173,56 @@ class CategoryDAO{
   static get_instance(){
     return instance;
   }
+  static async Get_All_Category() {
+    const pr = await new Promise((resolve, reject) => {
+      connection.query("SELECT * FROM CATEGORY", [], (err, result) => {
+        if (err) {
+          reject(new Error(err.message));
+        }
+        resolve(result);
+      });
+    });
+    return pr;
+  }
 
+  static async Get_a_Category(id) {
+    const pr = await new Promise((resolve, reject) => {
+      connection.query(
+        "SELECT * FROM CATEGORY WHERE CATEGORY_ID=?",
+        [id],
+        (err, result) => {
+          if (err) {
+            reject(new Error(err.message));
+          }
+          resolve(result);
+        }
+      );
+    });
+    return pr;
+  }
+
+  static async Add_Category(category) {
+    console.log(category)
+    const pr = await new Promise((resolve, reject) => {
+      connection.query(
+        "INSERT INTO CATEGORY SET CATEGORY_DESC=? , PARENT_ID= ? , CATEGORY_NAME=?,IMAGE = ?"
+       , [
+          category.CATEGORY_DESC,
+          category.PARENT_ID,
+          category.CATEGORY_NAME,
+          category.IMAGE
+        ],
+        (err, result) => {
+          if (err) {
+            reject(new Error(err.message));
+          }
+          resolve(result);
+        }
+      );
+    });
+    return pr;
+  }
+  
 }
 
 class DBDAO{
@@ -253,7 +299,127 @@ class DBDAO{
     }   
  }
 
+
  
+
+ class ShippersDAO{
+  constructor(){
+
+  }
+  static get_instance(){
+    return instance;
+  }
+  static async Get_All_SHIPPERS() {
+    const pr = await new Promise((resolve, reject) => {
+      connection.query("SELECT * FROM SHIPPERS", [], (err, result) => {
+        if (err) {
+          reject(new Error(err.message));
+        }
+        resolve(result);
+      });
+    });
+    return pr;
+  }
+
+  static async Get_a_SHIPPER(id) {
+    const pr = await new Promise((resolve, reject) => {
+      connection.query(
+        "SELECT * FROM SHIPPERS WHERE SHIPPER_ID=?",
+        [id],
+        (err, result) => {
+          if (err) {
+            reject(new Error(err.message));
+          }
+          resolve(result);
+        }
+      );
+    });
+    return pr;
+  }
+
+  static async Add_SHIPPER(shipper) {
+    
+    const pr = await new Promise((resolve, reject) => {
+      connection.query(
+        "INSERT INTO SHIPPERS SET NAME=? , CONTACT=? , COUNTRY=?;"
+       , [
+          shipper.NAME,
+          shipper.CONTACT,
+          shipper.COUNTRY
+        ],
+        (err, result) => {
+          if (err) {
+            reject(new Error(err.message));
+          }
+          resolve(result);
+        }
+      );
+    });
+    return pr;
+  }
+
+ }
+ class SupplierDAO{
+  constructor(){
+
+  }
+  static get_instance(){
+    return instance;
+  }
+  static async Get_All_Supplier() {
+    const pr = await new Promise((resolve, reject) => {
+      connection.query("SELECT * FROM SUPPLIERS", [], (err, result) => {
+        if (err) {
+          reject(new Error(err.message));
+        }
+        resolve(result);
+      });
+    });
+    return pr;
+  }
+
+  static async Get_a_Supplier(id) {
+    const pr = await new Promise((resolve, reject) => {
+      connection.query(
+        "SELECT * FROM SUPPLIERS WHERE SUPPLIER_ID=?",
+        [id],
+        (err, result) => {
+          if (err) {
+            reject(new Error(err.message));
+          }
+          resolve(result);
+        }
+      );
+    });
+    return pr;
+  }
+
+  static async Add_Supplier(supplier) {
+    // console.log(category)
+    const pr = await new Promise((resolve, reject) => {
+      connection.query(
+        "INSERT INTO SUPPLIERS SET NAME=? , CONTACT= ? , ADDRESS=?,CITY = ?,POSTALCODE=?,COUNTRY=?"
+       , [
+          supplier.NAME,
+          supplier.CONTACT,
+          supplier.ADDRESS,
+          supplier.CITY,
+          supplier.POSTALCODE,
+          supplier.COUNTRY,
+        ],
+        (err, result) => {
+          if (err) {
+            reject(new Error(err.message));
+          }
+          resolve(result);
+        }
+      );
+    });
+    return pr;
+  }
+
+
+ }
    
   
 
@@ -262,4 +428,7 @@ class DBDAO{
  module.exports.DBDAO = DBDAO;
  module.exports.USERDAO = USERDAO;
  module.exports.PRODUCTDAO = ProductDAO;
+ module.exports.CATEGORYDAO = CategoryDAO;
+ module.exports.SHIPPERDAO= ShippersDAO;
+ module.exports.SUPPLIERDAO = SupplierDAO;
 

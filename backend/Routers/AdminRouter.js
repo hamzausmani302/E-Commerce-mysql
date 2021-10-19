@@ -1,20 +1,25 @@
-
-
-
-
-
 const express = require('express');
 const dotenv = require('dotenv');
 const Admin = require('../Contoller/AdminContoller.js');
+const SupplierController = require('../Contoller/SupplierController.js');
+const ShipperController = require('../Contoller/ShipperController.js');
 dotenv.config();
 
 const router = express.Router();
 const {DBDAO} = require('../Service/dbService');
 
-router.get('/administrator' , Admin.AdminPage);
-router.post('/administrator/signup' , Admin.AdminSignup);
-router.post('/administrator/signin' , Admin.AdminSignin)
+router.get('/' , Admin.AdminPage);
+router.post('/signup' , Admin.AdminSignup);
+router.post('/signin' , Admin.AdminSignin)
 
+router.get('/api/shipper' , ShipperController.get_all_shippers )
+router.get('/api/shipper/:id' , ShipperController.Get_a_SHIPPER )
+router.post('/api/shipper/add' , ShipperController.Add_SHIPPER )
+
+
+router.get('/api/supplier' , SupplierController.get_all_Supplier );
+router.get('/api/supplier/:id' , SupplierController.get_a_Supplier );
+router.post('/api/supplier/add' , SupplierController.add_Supplier );
 
 router.get('/' ,(req,res)=>{
     res.send(`<h1> WELCOME PAGE </h1>

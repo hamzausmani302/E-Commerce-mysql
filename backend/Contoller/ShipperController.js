@@ -1,16 +1,25 @@
-// const path = require('path');
-const {CATEGORYDAO} = require('../Service/dbService');
-// const dotenv = require('dotenv');
-// const {SIGN , HASH,COMPARE_HASH} = require('../Service/HELPERS/SecurityHelper');
-const Category = require('../Models/Category');
 
-class CategoryController{
 
-    static add_Category(req,res){
+const path = require('path');
+const {SHIPPERDAO} = require('../Service/dbService');
+const dotenv = require('dotenv');
+dotenv.config();
+const {SIGN , HASH,COMPARE_HASH} = require('../Service/HELPERS/SecurityHelper');
+const Shipper = require('../Models/Shipper');
+class ShipperController{
+  
+   
+
+    static Add_SHIPPER(req,res){
+       
+
+        let name = req.body.name;
+        let contact = req.body.contact;
+        let country = req.body.country;
+        let shipper = new Shipper(0, name,  contact, country);
         
-        let category = new Category(0,req.body.PARENT_ID , req.body.CATEGORY_DESC ,req.body.CATEGORY_NAME, req.body.IMAGE);
-        // console.log(category);    
-        CATEGORYDAO.Add_Category(category).then(data=>{
+        SHIPPERDAO.Add_SHIPPER(shipper)
+        .then(data=>{
             let success = false;
             let rowsUpdated = 0;
             if(data.affectedRows > 0){
@@ -20,13 +29,13 @@ class CategoryController{
             res.status(200).send({success : success , rowsUpdated : rowsUpdated})
         })
         .catch(err=>{res.status(400).send({error : err.message})})
-        }
+    }
     
-    static get_a_Category(req,res){
+    static Get_a_SHIPPER(req,res){
         const id = req.params.id;
         console.log(id);
         //decode id then pass into dataabse
-        CATEGORYDAO.Get_a_Category(id)
+       SHIPPERDAO.Get_a_SHIPPER(id)
         .then(data=>{
             if(data.length > 0){ 
                 
@@ -40,8 +49,8 @@ class CategoryController{
         })
     }
 
-    static get_all_Category(req,res){
-        CATEGORYDAO.Get_All_Category()
+    static get_all_shippers(req,res){
+        SHIPPERDAO.Get_All_SHIPPERS()
         .then(data=>{
             if(data.length > 0){ 
                 
@@ -60,4 +69,4 @@ class CategoryController{
 
 }
 
-module.exports = CategoryController;
+module.exports = ShipperController;

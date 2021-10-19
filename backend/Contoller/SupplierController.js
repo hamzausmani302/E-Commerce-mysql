@@ -1,16 +1,15 @@
 // const path = require('path');
-const {CATEGORYDAO} = require('../Service/dbService');
+const {SUPPLIERDAO} = require('../Service/dbService');
 // const dotenv = require('dotenv');
 // const {SIGN , HASH,COMPARE_HASH} = require('../Service/HELPERS/SecurityHelper');
-const Category = require('../Models/Category');
+const Supplier = require('../Models/Supplier');
 
-class CategoryController{
+class SupplierController{
 
-    static add_Category(req,res){
-        
-        let category = new Category(0,req.body.PARENT_ID , req.body.CATEGORY_DESC ,req.body.CATEGORY_NAME, req.body.IMAGE);
+    static add_Supplier(req,res){
+        let supplier = new Supplier(0 , req.body.NAME , req.body.CONTACT ,req.body.ADDRESS, req.body.CITY, req.body.POSTALCODE, req.body.COUNTRY);
         // console.log(category);    
-        CATEGORYDAO.Add_Category(category).then(data=>{
+        SUPPLIERDAO.Add_Supplier(supplier).then(data=>{
             let success = false;
             let rowsUpdated = 0;
             if(data.affectedRows > 0){
@@ -22,11 +21,11 @@ class CategoryController{
         .catch(err=>{res.status(400).send({error : err.message})})
         }
     
-    static get_a_Category(req,res){
+    static get_a_Supplier(req,res){
         const id = req.params.id;
         console.log(id);
         //decode id then pass into dataabse
-        CATEGORYDAO.Get_a_Category(id)
+        SUPPLIERDAO.Get_a_Supplier(id)
         .then(data=>{
             if(data.length > 0){ 
                 
@@ -40,8 +39,8 @@ class CategoryController{
         })
     }
 
-    static get_all_Category(req,res){
-        CATEGORYDAO.Get_All_Category()
+    static get_all_Supplier(req,res){
+        SUPPLIERDAO.Get_All_Supplier()
         .then(data=>{
             if(data.length > 0){ 
                 
@@ -60,4 +59,4 @@ class CategoryController{
 
 }
 
-module.exports = CategoryController;
+module.exports = SupplierController;
