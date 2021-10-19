@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const {SIGN , HASH,COMPARE_HASH} = require('../Service/HELPERS/SecurityHelper');
 const Product = require('../Models/Product');
 class ProductController{
+<<<<<<< Updated upstream
     static Add_Page(req,res){
         res.sendFile(path.join(__dirname , '../views/ProductPage.html'));
     }
@@ -22,6 +23,27 @@ class ProductController{
             res.status(200).send({success : false , rowsUpdated : 0})
         })
         .catch(err=>{res.status(400).send({error : err.message})})
+=======
+    static update_Product(req,res){
+        const id = parseInt(req.body.PRODUCT_ID);
+        const categoryid = parseInt(req.body.CATEGORY_ID);
+        const supplier = parseInt(req.body.Supplier);
+        const PIECES = parseInt(req.body.PIECES);
+        //genereate encoded_ID
+
+        let product = new Product(id,req.body.PRODUCT_NAME , categoryid , req.body.description , req.body.tags , 
+            req.body.imageSource , suppplier , PIECES , req.body.ENCODED_ID);
+            PRODUCTDAO.update_a_product(product);
+    }
+
+    static add_Product(req,res){
+        let product = new Product(0,req.body.PRODUCT_NAME , req.body.CATEGORYID , req.body.description , req.body.tags , 
+            req.body.imageSource , req.body.Supplier , req.body.PIECES , req.body.ENCODED_ID);
+        PRODUCTDAO.Add_a_Product(product)
+        .then(data=>{res.status(200).send(data)})
+        .catch(err=>{res.status(400).send(err.message)})    
+
+>>>>>>> Stashed changes
     }
     
     static get_a_product(req,res){

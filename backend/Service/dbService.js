@@ -74,8 +74,90 @@ class USERDAO{
 
   static async update_User(){
 
+<<<<<<< Updated upstream
   }
   
+=======
+class ProductDAO {
+  constructor() {}
+  static get_instance() {
+    return instance;
+  }
+ 
+
+  static async Get_Products() {
+    const pr = await new Promise((resolve, reject) => {
+      connection.query("SELECT * FROM PRODUCT", [], (err, result) => {
+        if (err) {
+          reject(new Error(err.message));
+        }
+        resolve(result);
+      });
+    });
+    return pr;
+  }
+  static async Get_a_Product(id) {
+    const pr = await new Promise((resolve, reject) => {
+      connection.query(
+        "SELECT * FROM PRODUCT WHERE PRODUCT_ID=?",
+        [id],
+        (err, result) => {
+          if (err) {
+            reject(new Error(err.message));
+          }
+          resolve(result);
+        }
+      );
+    });
+    return pr;
+  }
+
+  static async Add_a_Product(product) {
+    const pr = await new Promise((resolve, reject) => {
+      connection.query(
+        `INSERT INTO PRODUCT SET PRODUCT_NAME=? , CATEGORYID=? , 
+          DESCRIPTION=? , TAGS= ? , IMAGESOURCE = ? ,SUPPLIER_ID = ? , PIECES = ? , ENCODED_ID= ?`,
+        [
+          product.PRODUCT_NAME,
+          product.CATEGORYID,
+          product.DESCRIPTION,
+          product.TAGS,
+          product.IMAGESOURCE,
+          product.SUPPLIER_ID,
+          product.PIECES,
+          product.ENCODED_ID,
+        ],
+        (err, result) => {
+          if (err) {
+            reject(err.message);
+          }
+          resolve(result);
+        }
+      );
+    });
+    return pr;
+  }
+  
+
+  static update_a_product(id, product){
+    const pr = new Promise((resolve, reject) => {
+        let parameters = [];
+        
+        let query = "UPDATE TABLE PRODUCT SET ";
+        let query2 = "WHERE PRODUCT_ID = ?"
+        for(const   x in product ){
+            if(product[x] !== undefined && product[x] !== null && product[x] != ""){
+              let str = x + " = ? ,"
+              query += str;
+              parameters.push(product[x]); 
+            }
+        }
+        parameters.push(id);
+        console.log(query);
+    })
+    return pr;
+  }
+>>>>>>> Stashed changes
 
 }
 
@@ -88,6 +170,7 @@ class ProductDAO{
   static get_instance(){
     return instance;
   }
+<<<<<<< Updated upstream
   static async Get_Products(){
       const pr = await new Promise((resolve , reject) => {
         connection.query("SELECT * FROM PRODUCT" , [] , (err,result) => {
@@ -101,6 +184,15 @@ class ProductDAO{
     const pr = await new Promise((resolve , reject) => {
       connection.query("SELECT * FROM PRODUCT WHERE PRODUCT_ID=?" , [id] , (err,result) => {
         if(err){reject(new Error(err.message))};
+=======
+
+  static async Get_All_Category() {
+    const pr = await new Promise((resolve, reject) => {
+      connection.query("SELECT * FROM CATEGORY", [], (err, result) => {
+        if (err) {
+          reject(new Error(err));
+        }
+>>>>>>> Stashed changes
         resolve(result);
       })
     })
@@ -131,6 +223,23 @@ class ProductDAO{
   }
   static Remove_a_Product(product){
 
+<<<<<<< Updated upstream
+=======
+  static async Get_a_Category(id) {
+    const pr = await new Promise((resolve, reject) => {
+      connection.query(
+        "SELECT * FROM CATEGORY WHERE CATEGORY_ID=?",
+        [id],
+        (err, result) => {
+          if (err) {
+            reject(new Error(err));
+          }
+          resolve(result);
+        }
+      );
+    });
+    return pr;
+>>>>>>> Stashed changes
   }
 
   static update_a_product(id , product){
