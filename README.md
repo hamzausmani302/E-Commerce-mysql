@@ -1,7 +1,7 @@
 # E-Commerce-mysql
 A soltution for local stores to shift their market online
 
-#TIMELINE PROJECT
+## TIMELINE PROJECT
 
 <li> DAY 1 -  CREATE TABLES (attributes)   
 <li> DAY 2 -  CREATE TABLE RELATIONS(constraints)   
