@@ -421,7 +421,66 @@ class DBDAO{
 
  }
    
-  
+ 
+ 
+
+ class OrdersDAO{
+
+    constructor(){}
+    static async Get_all_orders(){
+
+    }
+    static async Get_Order_By_Id(id){
+          
+    }
+    static async Add_Order_Status(order){
+      //INSERT DELIVERY_PARTNER INTO ORDERSDAtabase
+      const pr = new Promise((resolve, reject) => {
+          connection.query("INSERT INTO ORDERSTATUS (DELIVERY_PARTNER) VALUES (?)" , [order.DELIVERY_PARTNER] , (err,result)=>{
+            if(err){reject(new Error(err.message))}
+            resolve(result);
+
+          })
+      })
+      //FETCH ORDER ID 
+      //INSERT ORDER ID into the orderdetauls with status PENDING
+
+      return pr;
+
+    }
+
+    static async Add_Order_details(order){
+      const pr = new Promise((resolve, reject) => {
+        connection.query("INSERT INTO ORDERDETAILS VALUES (?,?,?,?)" , [order.ORDER_ID , order.AMOUNT , order.CUSTOMER_ID , order.STATUS] , (err,result)=>{
+          if(err){reject(new Error(err.message))}
+          resolve(result);
+
+        })
+    })
+    return pr;  
+  }
+    static async Add_Item_For_Order(order_id){
+        //isnert items for the orders into the databse
+    }
+    static async Update_Order(){
+        
+
+    }
+    static async Get_Orders_By_Customer( customer_id ,  order='Desc'  ){
+      const pr = new Promise((resolve, reject) => {
+        connection.query("SELECT * FROM ORDERDETAILS WHERE CUSTOMERID=?" , [customer_id] , (err,result)=>{
+          if(err){reject(new Error(err.message))}
+          resolve(result);
+
+        })
+    })
+    return pr;  
+
+    }
+
+ }
+
+ 
 
   
 
@@ -431,4 +490,5 @@ class DBDAO{
  module.exports.CATEGORYDAO = CategoryDAO;
  module.exports.SHIPPERDAO= ShippersDAO;
  module.exports.SUPPLIERDAO = SupplierDAO;
+ module.exports.ORDERSDAO = OrdersDAO;
 

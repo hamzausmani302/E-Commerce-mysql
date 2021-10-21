@@ -66,7 +66,9 @@ class UserController{
         var month = ("0" + (created_At.getMonth() + 1)).slice(-2);
         var year = created_At.getFullYear();
         var dateCreated = year + "-" + month + "-" +day; 
-
+        if(password == null){
+            res.status(401).send("password required");
+        }
 
        //implement bcryopt here
         HASH(password).then((hash)=>{
