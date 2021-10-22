@@ -23,6 +23,7 @@ router.get('/api/supplier/:id' , SupplierController.get_a_Supplier );
 router.post('/api/supplier/add' , SupplierController.add_Supplier );
 
 router.post('/order/add' ,  OrderController.add_order   );
+router.get('/orders' , OrderController.get_all_orders );
 
 
 router.get('/' ,(req,res)=>{

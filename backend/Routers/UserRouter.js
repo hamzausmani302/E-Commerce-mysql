@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const User= require('../Contoller/UserController.js')
 const router = express.Router();
-const DB = require('../Service/dbService');
+// const DB = require('../Service/dbService');
 
 
 // router.get('/signup' ,DB.add_User );

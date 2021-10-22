@@ -12,7 +12,7 @@ let instance = null;
     port : process.env.db_port,
     user: process.env.MYSQL_USERNAME,
     password:process.env.MYSQL_PASSWORD,
-    database : "test"
+    database : "store"
   });
   connection.connect((err)=>{
     if(err) {return console.log(`error : ${err.message}`)}
@@ -428,10 +428,20 @@ class DBDAO{
 
     constructor(){}
     static async Get_all_orders(){
+      const pr = new Promise((resolve, reject) => {
+        connection.query("" , [order.DELIVERY_PARTNER] , (err,result)=>{
+          if(err){reject(new Error(err.message))}
+          resolve(result);
+
+        })
+    })
+   
+
+    return pr;
 
     }
     static async Get_Order_By_Id(id){
-          
+
     }
     static async Add_Order_Status(order){
       //INSERT DELIVERY_PARTNER INTO ORDERSDAtabase
@@ -442,16 +452,16 @@ class DBDAO{
 
           })
       })
-      //FETCH ORDER ID 
-      //INSERT ORDER ID into the orderdetauls with status PENDING
+     
 
       return pr;
 
     }
 
+
     static async Add_Order_details(order){
       const pr = new Promise((resolve, reject) => {
-        connection.query("INSERT INTO ORDERDETAILS VALUES (?,?,?,?)" , [order.ORDER_ID , order.AMOUNT , order.CUSTOMER_ID , order.STATUS] , (err,result)=>{
+        connection.query("INSERT INTO ORDERDETAILS (AMOUNT,CUSTOMERID,STATUS,DELIVERY_PARTNER) VALUES (?,?,?,?)" , [  order.AMOUNT , order.CUSTOMER_ID , order.STATUS , order.DELIVERY_PARTNER] , (err,result)=>{
           if(err){reject(new Error(err.message))}
           resolve(result);
 
@@ -459,13 +469,70 @@ class DBDAO{
     })
     return pr;  
   }
-    static async Add_Item_For_Order(order_id){
-        //isnert items for the orders into the databse
+    static async Add_Item_For_Order(order_id , items_list){
+       
+      //isnert items for the orders into the databse
+        const pr = new Promise((resolve, reject) => {
+          
+          let res_arr = [];
+          let query = `INSERT INTO ORDERS_ITEMS (ORDER_ID , PRODUCT_ID , QUANTITY) VALUES `;
+          for (let key in items_list){
+              let q1 = `(? , ? , ? ),`;
+              query += q1;
+              res_arr.push(order_id , parseInt(key) , items_list[key]);      
+          }
+          query = query.substring(0, query.length-1)+ ";";
+          
+          connection.query(query , res_arr , (err,result)=>{
+            if(err){reject(new Error(err.message))}
+            resolve(result);
+          });
+          
+          
+      })
+      return pr;
     }
+
+    static async get_all_orders(){
+      const pr = new Promise((resolve, reject) => {
+        connection.query(`SELECT O.* , oi.PRODUCTS
+        FROM orderdetails O
+        left join orders_items oi
+        on O.ORDER_ID = oi.ORDER_ID` , [] , (err,result)=>{
+          if(err){reject(new Error(err.message))}
+          resolve(result);
+
+        })
+    })
+    return pr;  
+
+    }
+
     static async Update_Order(){
         
 
     }
+    static async Get_All_Items(order_id){
+      const pr = new Promise((resolve, reject) => {
+        connection.query("SELECT ORDER_ID , PRODUCT_ID , QUANTITY FROM ORDERS_ITEMS WHERE ORDER_ID = ?" , [order_id] , (err,result)=>{
+          if(err){reject(new Error(err.message))}
+          resolve(result);
+        })
+    })
+    return pr;  
+    }
+
+    static async Get_All_Orders(){
+      const pr = new Promise((resolve, reject) => {
+        connection.query("SELECT * FROM ORDERDETAILS WHERE STATUS='PENDING'" , [] , (err,result)=>{
+          if(err){reject(new Error(err.message))}
+          resolve(result);
+
+        })
+    })
+    return pr;  
+    }
+
     static async Get_Orders_By_Customer( customer_id ,  order='Desc'  ){
       const pr = new Promise((resolve, reject) => {
         connection.query("SELECT * FROM ORDERDETAILS WHERE CUSTOMERID=?" , [customer_id] , (err,result)=>{
