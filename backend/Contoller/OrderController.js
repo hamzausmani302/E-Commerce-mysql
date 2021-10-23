@@ -58,22 +58,26 @@ class OrderController{
     static get_all_orders(req,res){
         
         let products;
+        let promises  = [];
         let count = 0;
+        let result = [];
         ORDERSDAO.Get_All_Orders()
        .then(data=>{
            if(data.length > 0){
-                for(let i = 0 ; i < data.length ; i++){
-                    ORDERSDAO.Get_All_Items(data[i].ORDER_ID)
-                    .then(data1=>{
-                        data['items'] = data1 ;
-                        count++;
-                    
-                    })
-                    .catch(err1=>{console.log("error");throw new Error(err1.message)})
-                }      
-                if(count >= data.length-1){
-                    res.send(data);
+              data.forEach(element => {
+
+                      promises.push(ORDERSDAO.Get_All_Items(element.ORDER_ID));
+                  
+                 
+              });      
+            
+              Promise.all(promises).then((values) => {
+                for(let i =0 ; i < values.length ;i++){
+                     data[i].items=  values[i];
                 }
+                res.send(data);
+              });
+
            }else{
                res.send("no orders to display");
            }
