@@ -9,6 +9,9 @@ dotenv.config();
 const router = express.Router();
 const {DBDAO} = require('../Service/dbService');
 
+
+
+
 router.get('/' , Admin.AdminPage);
 router.post('/signup' , Admin.AdminSignup);
 router.post('/signin' , Admin.AdminSignin)
@@ -24,7 +27,7 @@ router.post('/api/supplier/add' , SupplierController.add_Supplier );
 
 router.post('/order/add' ,  OrderController.add_order   );
 router.get('/orders' , OrderController.get_all_orders );
-
+router.get('/orders/:id' , OrderController.get_a_order );
 
 router.get('/' ,(req,res)=>{
     res.send(`<h1> WELCOME PAGE </h1>

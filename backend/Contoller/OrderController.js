@@ -8,8 +8,10 @@ const {ORDERSDAO , PRODUCTDAO} = require('../Service/dbService');
 class OrderController{
     
     static update_a_order(req,res){
-        
+
     }
+    
+    
 
     static add_order(req,res){
         let id = req.body.customer_id;
@@ -51,16 +53,37 @@ class OrderController{
     
 
     static get_a_order(req,res){
-       let id = req.params.orderId;
+       let id = parseInt(req.params.id);
+       if(id == null || id == undefined){
+            return res.status(400).send({error : "id not provided"});
+       }
+       let promises = [];
+       ORDERSDAO.get_orders_by_id(id)
+       .then(data=>{
+           if(data.length > 0){
+                let order = data[0];
+                ORDERSDAO.Get_All_Items(id).then(data1=>{
+                    order.items = data1;
+                    res.status(200).send(order);  
+                }).catch(err1=>{throw new Error("error fetching data")})
+               
+                 
+                
+            
+             
+           }else{
+               res.send("no such Orders exist");
+           }
+         })
+       .catch(err=>{res.send({error : err.message})})
 
     }
     
     static get_all_orders(req,res){
         
-        let products;
+       
         let promises  = [];
-        let count = 0;
-        let result = [];
+        
         ORDERSDAO.Get_All_Orders()
        .then(data=>{
            if(data.length > 0){

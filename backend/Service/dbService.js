@@ -493,15 +493,11 @@ class DBDAO{
       return pr;
     }
 
-    static async get_all_orders(){
+    static async get_orders_by_id(order_id){
       const pr = new Promise((resolve, reject) => {
-        connection.query(`SELECT O.* , oi.PRODUCTS
-        FROM orderdetails O
-        left join orders_items oi
-        on O.ORDER_ID = oi.ORDER_ID` , [] , (err,result)=>{
+        connection.query(`SELECT * FROM ORDERDETAILS WHERE ORDER_ID =?` , [order_id] , (err,result)=>{
           if(err){reject(new Error(err.message))}
           resolve(result);
-
         })
     })
     return pr;  
