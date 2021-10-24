@@ -33,15 +33,19 @@ const JWTAUTH_SIGN = (payload )=>{
         email : payload.email,
         role : payload.role,
         created_At : payload.created_At
-    }, process.env.SECRET_KEY, { expiresIn: '2m' });
+    }, process.env.SECRET_KEY, { expiresIn: '5m' });
     return token;
 }
 const JWTAUTH_VERIFY = (token )=>{
-    jwt.verify(token, process.env.SECRET_KEY , function(err, decoded) {
-            if(err){return null}
-            return decoded;
+    let pr = new Promise((resolve, reject)=>{
+        jwt.verify(token, process.env.SECRET_KEY , function(err, decoded) {
+            if(err){reject(err)}
+            console.log(decoded);
+           resolve(decoded);
     });
-       
+    
+    })
+    return pr;   
 
 }
 
