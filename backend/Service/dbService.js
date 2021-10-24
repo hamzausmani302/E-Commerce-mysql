@@ -545,7 +545,67 @@ class DBDAO{
 
  
 
+class TransactionsDAO {
+  constructor(){
+    
+  }
+
+  static async Get_all_Transactions() {
+    const pr = new Promise((resolve, reject) => {
+      connection.query("Select * from TRANSACTIONS", [], (err, result) => {
+        if (err) {
+          reject(new Error(err.message));
+        }
+        resolve(result);
+      });
+    });
+    return pr;
+  }
+  static async Get_a_Transaction(id) {
+    const pr = await new Promise((resolve, reject) => {
+      connection.query(
+        "SELECT * FROM TRANSACTIONS WHERE TRANSACTION_ID=?",
+        [id],
+        (err, result) => {
+          if (err) {
+            reject(new Error(err.message));
+          }
+          resolve(result);
+        }
+      );
+    });
+    return pr;
+  }
+
+  // TODO-CHECK: IN THE BELOW FUNCTION USERID AND ORDERID WILL BE RECEIVED SO NO NEED TO INSERT
   
+static async Add_Transactions(transaction) {
+    
+    const pr = await new Promise((resolve, reject) => {
+      console.log(transaction)
+      connection.query(
+        "INSERT INTO TRANSACTIONS (USER_ID, AMOUNT , ORDER_ID, PAYMENT_METHOD,TRANSACTION_AT) VALUES (?,?,?,?,?)",
+        [
+          1,
+          100,
+          38,
+          'cash',
+          '2021-12-01'
+        ],
+        (err, result) => {
+          console.log(result);
+          console.log(err);
+          if (err) {
+             reject(new Error(err.message));
+          }
+          resolve(result);
+        }
+      );
+      // resolve("hello");
+    });
+    return pr;
+  }
+}
 
  module.exports.DBDAO = DBDAO;
  module.exports.USERDAO = USERDAO;
@@ -554,4 +614,4 @@ class DBDAO{
  module.exports.SHIPPERDAO= ShippersDAO;
  module.exports.SUPPLIERDAO = SupplierDAO;
  module.exports.ORDERSDAO = OrdersDAO;
-
+ module.exports.TRANSACTIONSDAO = TransactionsDAO;

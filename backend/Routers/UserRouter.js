@@ -11,6 +11,7 @@ const router = express.Router();
 // router.get('/login' , (req,res)=>{
 //     res.send("<div>hi one1 </div>")
 // })
+
 // router.get('/customers' , (req,res)=>{
 //     const resp= DB.get_all().then((data)=>{return res.json(data)});
     
