@@ -175,6 +175,20 @@ class CategoryDAO{
   static get_instance(){
     return instance;
   }
+  static async update_a_category(id , update_data){
+    const pr = await new Promise((resolve, reject) => {
+      let {query,ans_arr} = GEN_QUERY("CATEGORY" , update_data , "CATEGORY_ID");
+      ans_arr.push(id);
+      
+      connection.query(query, ans_arr, (err, result) => {
+        if (err) {
+          reject(new Error(err.message));
+        }
+        resolve(result);
+      });
+    });
+    return pr;
+  }
   static async Get_All_Category() {
     const pr = await new Promise((resolve, reject) => {
       connection.query("SELECT * FROM CATEGORY", [], (err, result) => {
@@ -584,7 +598,7 @@ class DBDAO{
 
     }
     static async cancel_order(id){
-        
+
     }
 
     static async Get_all_orders(){

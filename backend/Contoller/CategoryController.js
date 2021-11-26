@@ -3,9 +3,37 @@ const {CATEGORYDAO} = require('../Service/dbService');
 // const dotenv = require('dotenv');
 // const {SIGN , HASH,COMPARE_HASH} = require('../Service/HELPERS/SecurityHelper');
 const Category = require('../Models/Category');
-
+const {VERIFY_NUM_INPUT} = require('../Service/HELPERS/SecurityHelper');
 class CategoryController{
+    static update_category(req,res){
+        let id = req.params.id;
+        if(!VERIFY_NUM_INPUT(id)){
+            return res.status(400).send({error : "invalid input"});
+        }
+        let nid = Number(id);
+        //converted to a number and checfked
+        let update_data = req.body.data;
+        //fetch body objects
+        //send to db to save changes
+        CATEGORYDAO.update_a_category(nid , update_data)
+        .then(data=>{
+            if(data){ 
+                let msg = "successfully updated records";
+                if(data.affectedRows == 0){
+                    msg = "no such records exists";
+                }
+                return res.status(200).send({affectedRows : data.affectedRows , message : msg});
+                
+            }
+            return res.json({error : "invalid parameters",  message : "invalid parameters"});
+        })
+        .catch(err=>{
+            return res.json({error : "invalid parameters",message : "invalid parameters"});
+        })
 
+
+
+    }
     static add_Category(req,res){
         
         let category = new Category(0,req.body.PARENT_ID , req.body.CATEGORY_DESC ,req.body.CATEGORY_NAME, req.body.IMAGE);

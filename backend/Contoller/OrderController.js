@@ -4,12 +4,36 @@ const path = require('path');
 const Order = require('../Models/Order');
 const Item = require('../Models/OrderItem');
 const {ORDERSDAO , PRODUCTDAO , DBDAO} = require('../Service/dbService');
-
+const {VERIFY_NUM_INPUT} = require('../Service/HELPERS/SecurityHelper');
 class OrderController{
     
     static update_a_order(req,res){
+        let id = req.params.id;
+        if(!VERIFY_NUM_INPUT(id)){
+            return res.status(400).send({error : "invalid input"});
+        }
+        let nid = Number(id);
+        //converted to a number and checfked
+        let update_data = req.body.data;
+        //fetch body objects
+        //send to db to save changes
+        ORDERSDAO.update_order(nid , update_data)
+        .then(data=>{
+            if(data){ 
+                let msg = "successfully updated records";
+                if(data.affectedRows == 0){
+                    msg = "no such records exists";
+                }
+                return res.status(200).send({affectedRows : data.affectedRows , message : msg});
+                
+            }
+            return res.json({error : "invalid parameters",  message : "invalid parameters"});
+        })
+        .catch(err=>{
+            return res.json({error : "invalid parameters",message : "invalid parameters"});
+        })
 
-    }
+    }   
     
     
 
