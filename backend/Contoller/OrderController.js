@@ -3,7 +3,7 @@
 const path = require('path');
 const Order = require('../Models/Order');
 const Item = require('../Models/OrderItem');
-const {ORDERSDAO , PRODUCTDAO} = require('../Service/dbService');
+const {ORDERSDAO , PRODUCTDAO , DBDAO} = require('../Service/dbService');
 
 class OrderController{
     
@@ -83,17 +83,17 @@ class OrderController{
         
        
         let promises  = [];
-        
         ORDERSDAO.Get_All_Orders()
        .then(data=>{
            if(data.length > 0){
-              data.forEach(element => {
+              
+                data.forEach(element => {
 
                       promises.push(ORDERSDAO.Get_All_Items(element.ORDER_ID));
                   
                  
               });      
-            
+              
               Promise.all(promises).then((values) => {
                 for(let i =0 ; i < values.length ;i++){
                      data[i].items=  values[i];

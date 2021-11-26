@@ -33,7 +33,7 @@ const JWTAUTH_SIGN = (payload )=>{
         email : payload.email,
         role : payload.role,
         created_At : payload.created_At
-    }, process.env.SECRET_KEY, { expiresIn: '5m' });
+    }, process.env.SECRET_KEY, { expiresIn: '5h' });
     return token;
 }
 const JWTAUTH_VERIFY = (token )=>{
@@ -48,11 +48,17 @@ const JWTAUTH_VERIFY = (token )=>{
     return pr;   
 
 }
+const VERIFY_INPUT_NUM = (input)=>{
+    let result = Number(input);
+    if(result != NaN){return true;}
+    return false;
 
+
+}
 
 module.exports.SIGN = JWTAUTH_SIGN
 module.exports.VERIFY = JWTAUTH_VERIFY;
 module.exports.HASH = BCRYPT_TOHASH;
 module.exports.COMPARE_HASH =  COMPARE_HASH;
-
+module.exports.VERIFY_NUM_INPUT = VERIFY_INPUT_NUM;
 

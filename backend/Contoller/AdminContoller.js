@@ -3,9 +3,36 @@
 const path = require('path');
 const {DBDAO} = require('../Service/dbService');
 const dotenv = require('dotenv');
-const {SIGN , HASH,COMPARE_HASH} = require('../Service/HELPERS/SecurityHelper');
+const {SIGN , HASH,COMPARE_HASH , VERIFY} = require('../Service/HELPERS/SecurityHelper');
+const { isNumber } = require('util');
 class AdminController{
+    static Get_Customers(req,res){
+        DBDAO.get_all_users()
+        .then((data)=>{
+            res.status(200).json(data);
+        })
+        .catch(err=>{
+            res.status(500).json({error : err.message});
+        })
+    }
+    static Get_Customer_by_id(req,res){
+        const id = parseInt(req.params.id);
 
+        if(!Number.isInteger(id) || id === 0){return res.status(503).json({error  : "Bad literals sent"})}
+
+        DBDAO.get_customer_by_id(id)
+        .then(data=>{
+           
+                return res.status(200).json(data);
+           
+            
+
+            
+        })
+        .catch(err=>{
+            return res.status(500).send({error : err.message});
+        })
+    }
     static AdminPage(req,res){
         res.sendFile(path.join(__dirname  , '../views/AdminPage.html'));
 
@@ -49,7 +76,15 @@ class AdminController{
     }
 
 
-
+    static validate_token(req,res) {
+        let token =  req.body.token;
+        console.log(token);
+        VERIFY(token).then((data)=>{
+            return res.status(200).json(data);
+        }).catch(err=>{
+            return res.status(403).json({error : "Unauthorized Access"});
+        })
+    }
 
     static AdminSignin(req , res){
         const email = req.body.email;

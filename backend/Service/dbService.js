@@ -1,5 +1,6 @@
 const mysql = require('mysql2');
 const dotenv = require('dotenv');
+const {GEN_QUERY} = require('./HELPERS/DBhelper.js');
 dotenv.config();
 
 console.log("Loading database");
@@ -29,6 +30,7 @@ class USERDAO{
   static get_instance(){
     return instance;
   }
+  
   static async fetch_from_email(email ){
     const pr = await new Promise(
       (resolve , reject) => {
@@ -200,7 +202,24 @@ class CategoryDAO{
     });
     return pr;
   }
-
+  static async Delete_Category(id){
+    const pr = await new Promise((resolve, reject) => {
+      connection.query(
+        "UPDATE TABLE CATEGORY SET PARENT_ID IS NULL WHERE PARENT_ID = ?; DELETE FROM category WHERE category_id = ?;"
+       , [
+         id,
+         id
+        ],
+        (err, result) => {
+          if (err) {
+            reject(new Error(err.message));
+          }
+          resolve(result);
+        }
+      );
+    });
+    return pr;
+  }
   static async Add_Category(category) {
     console.log(category)
     const pr = await new Promise((resolve, reject) => {
@@ -226,7 +245,16 @@ class CategoryDAO{
 }
 
 class DBDAO{
+    static async get_all_users(){
+        const pr = await new Promise((resolve, reject) =>{
+          connection.query("SELECT * FROM CUSTOMERS" , [  ] , (err,result)=>{
+            if(err){reject(new Error(err.message))}
 
+            resolve(result);
+          })
+        })
+        return pr;
+    }
     constructor(){
 
     }
@@ -293,10 +321,27 @@ class DBDAO{
       })
 
       })
-      console.log(pr);
+      //console.log(pr);
       return pr;
          
     }   
+
+    static async get_customer_by_id(id){
+      const pr = await new Promise((resolve, reject)=>{
+        connection.query(`select CUSTOMER_ID , 
+        FIRST_NAME,LAST_NAME , EMAIL , ADDRESS , PHONE_NUMBER , CREATED_AT  
+        from customers where CUSTOMER_ID = ?
+        `
+        ,[id ] , (err,result)=>{
+          if(err){reject(new Error(err.message))}
+          resolve(result);
+          
+      })
+
+      })
+      return pr;
+    }
+
  }
 
 
@@ -309,6 +354,24 @@ class DBDAO{
   static get_instance(){
     return instance;
   }
+  
+
+  static async update_a_shipper(id , update_data){
+    
+    const pr = await new Promise((resolve, reject) => {
+      let {query,ans_arr} = GEN_QUERY("SHIPPERS" , update_data , "SHIPPER_ID");
+      ans_arr.push(id);
+      
+      connection.query(query, ans_arr, (err, result) => {
+        if (err) {
+          reject(new Error(err.message));
+        }
+        resolve(result);
+      });
+    });
+    return pr;
+  }
+
   static async Get_All_SHIPPERS() {
     const pr = await new Promise((resolve, reject) => {
       connection.query("SELECT * FROM SHIPPERS", [], (err, result) => {
@@ -336,7 +399,42 @@ class DBDAO{
     });
     return pr;
   }
-
+  static async delete_shippers(id){
+    const pr =await new Promise((resolve, reject) => {
+      connection.query(
+        "delete from shippers where shipper_id = ?;"
+       , [
+         id
+        ],
+        (err, result) => {
+          if (err) {
+            reject(new Error(err.message));
+          }
+          resolve(result);
+        }
+      );
+    })
+   return pr;
+   
+  }
+  static async set_to_null_orders(id){
+    const pr =await new Promise((resolve, reject) => {
+      connection.query(
+        "UPDATE ORDERDETAILS SET DELIVERY_PARTNER = NULL WHERE DELIVERY_PARTNER= ?;"
+       , [
+         id
+        ],
+        (err, result) => {
+          if (err) {
+            reject(new Error(err.message));
+          }
+          resolve(result);
+        }
+      );
+    })
+   return pr;
+   
+  }
   static async Add_SHIPPER(shipper) {
     
     const pr = await new Promise((resolve, reject) => {
@@ -362,6 +460,57 @@ class DBDAO{
  class SupplierDAO{
   constructor(){
 
+  }
+  static async update_a_supplier(id , update_data){
+    
+    const pr = await new Promise((resolve, reject) => {
+      let {query,ans_arr} = GEN_QUERY("SUPPLIERS" , update_data , "SUPPLIER_ID");
+      ans_arr.push(id);
+      
+      connection.query(query, ans_arr, (err, result) => {
+        if (err) {
+          reject(new Error(err.message));
+        }
+        resolve(result);
+      });
+    });
+    return pr;
+  }
+  static async set_to_null_products(id){
+    const pr =await new Promise((resolve, reject) => {
+      connection.query(
+        "UPDATE PRODUCT SET SUPPLIER_ID = NULL WHERE SUPPLIER_ID= ?;"
+       , [
+         id
+        ],
+        (err, result) => {
+          if (err) {
+            reject(new Error(err.message));
+          }
+          resolve(result);
+        }
+      );
+    })
+   return pr;
+   
+  }
+  static async delete_supplier(id){
+    const pr =await new Promise((resolve, reject) => {
+      connection.query(
+        "delete from suppliers where supplier_id = ?;"
+       , [
+         id
+        ],
+        (err, result) => {
+          if (err) {
+            reject(new Error(err.message));
+          }
+          resolve(result);
+        }
+      );
+    })
+   return pr;
+   
   }
   static get_instance(){
     return instance;
@@ -427,6 +576,17 @@ class DBDAO{
  class OrdersDAO{
 
     constructor(){}
+    static async update_order(id , updated_data){
+
+    }
+
+    static async set_order_active(id){
+
+    }
+    static async cancel_order(id){
+        
+    }
+
     static async Get_all_orders(){
       const pr = new Promise((resolve, reject) => {
         connection.query("" , [order.DELIVERY_PARTNER] , (err,result)=>{
@@ -520,7 +680,10 @@ class DBDAO{
 
     static async Get_All_Orders(){
       const pr = new Promise((resolve, reject) => {
-        connection.query("SELECT * FROM ORDERDETAILS WHERE STATUS='PENDING'" , [] , (err,result)=>{
+        connection.query(`select O.ORDER_ID , O.AMOUNT , O.CUSTOMERID , CONCAT(c.FIRST_NAME ,' ', C.LAST_NAME)  AS NAME1 , O.STATUS 
+        from orderdetails o
+        join customers c
+        on c.CUSTOMER_ID = o.CUSTOMERID WHERE O.STATUS= 'PENDING';` , [] , (err,result)=>{
           if(err){reject(new Error(err.message))}
           resolve(result);
 
