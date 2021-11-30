@@ -15,11 +15,13 @@ class ShipperController{
         }
         let nid = Number(id);
         //converted to a number and checfked
-        let update_data = req.body.data;
+        let update_data = req.body;
+        
         //fetch body objects
         //send to db to save changes
         SHIPPERDAO.update_a_shipper(nid , update_data)
         .then(data=>{
+            console.log(data);
             if(data){ 
                 let msg = "successfully updated records";
                 if(data.affectedRows == 0){
@@ -28,10 +30,11 @@ class ShipperController{
                 return res.status(200).send({affectedRows : data.affectedRows , message : msg});
                 
             }
-            return res.json({error : "invalid parameters",  message : "invalid parameters"});
+            console.log(update_data);
+            return res.json({error : "invalid parameters",  message : "invalid parameters1"});
         })
         .catch(err=>{
-            return res.json({error : "invalid parameters",message : "invalid parameters"});
+            return res.json({error : "invalid parameters",message : err.message});
         })
 
     }

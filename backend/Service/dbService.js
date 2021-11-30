@@ -87,6 +87,18 @@ class ProductDAO{
   constructor(){
 
   }
+  static async Get_Hot_Products(){
+    const pr = await new Promise((resolve , reject) => {
+      connection.query(`select PRODUCT_ID , SUM(QUANTITY)
+      from orders_items
+      group by PRODUCT_ID;
+      ` , [] , (err,result) => {
+        if(err){reject(new Error(err.message))};
+        resolve(result);
+      })
+    })
+    return pr;
+  }
   static get_instance(){
     return instance;
   }
@@ -476,11 +488,11 @@ class DBDAO{
 
   }
   static async update_a_supplier(id , update_data){
-    
+    console.log(update_data);
     const pr = await new Promise((resolve, reject) => {
       let {query,ans_arr} = GEN_QUERY("SUPPLIERS" , update_data , "SUPPLIER_ID");
       ans_arr.push(id);
-      
+      console.log(query)
       connection.query(query, ans_arr, (err, result) => {
         if (err) {
           reject(new Error(err.message));
@@ -510,8 +522,9 @@ class DBDAO{
   }
   static async delete_supplier(id){
     const pr =await new Promise((resolve, reject) => {
+      console.log("id" , id);
       connection.query(
-        "delete from suppliers where supplier_id = ?;"
+        "delete from suppliers where SUPPLIER_ID = ?;"
        , [
          id
         ],
@@ -682,9 +695,18 @@ class DBDAO{
         
 
     }
+    static async Remove_items(items_id){
+      const pr = new Promise((resolve, reject) => {
+        connection.query("delete from orders_items where ORDER_ITEMS_ID = ?;" , [items_id] , (err,result)=>{
+          if(err){reject(new Error(err.message))}
+          resolve(result);
+        })
+    })
+    return pr;  
+    }
     static async Get_All_Items(order_id){
       const pr = new Promise((resolve, reject) => {
-        connection.query("SELECT ORDER_ID , PRODUCT_ID , QUANTITY FROM ORDERS_ITEMS WHERE ORDER_ID = ?" , [order_id] , (err,result)=>{
+        connection.query("SELECT * FROM ORDERS_ITEMS OI join PRODUCT P ON  OI.PRODUCT_ID = P.PRODUCT_ID WHERE ORDER_ID = ?;" , [order_id] , (err,result)=>{
           if(err){reject(new Error(err.message))}
           resolve(result);
         })
@@ -694,10 +716,10 @@ class DBDAO{
 
     static async Get_All_Orders(){
       const pr = new Promise((resolve, reject) => {
-        connection.query(`select O.ORDER_ID , O.AMOUNT , O.CUSTOMERID , CONCAT(c.FIRST_NAME ,' ', C.LAST_NAME)  AS NAME1 , O.STATUS 
+        connection.query(`select O.ADDRESS, O.ORDER_ID , O.AMOUNT , O.CUSTOMERID , CONCAT(c.FIRST_NAME ,' ', C.LAST_NAME)  AS NAME1 , O.STATUS 
         from orderdetails o
         join customers c
-        on c.CUSTOMER_ID = o.CUSTOMERID WHERE O.STATUS= 'PENDING';` , [] , (err,result)=>{
+        on c.CUSTOMER_ID = o.CUSTOMERID ` , [] , (err,result)=>{
           if(err){reject(new Error(err.message))}
           resolve(result);
 

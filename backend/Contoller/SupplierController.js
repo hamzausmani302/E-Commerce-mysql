@@ -14,11 +14,13 @@ class SupplierController{
         }
         let nid = Number(id);
         //converted to a number and checfked
-        let update_data = req.body.data;
+        let update_data = req.body;
+        console.log(update_data);
         //fetch body objects
         //send to db to save changes
         SUPPLIERDAO.update_a_supplier(nid , update_data)
         .then(data=>{
+            
             if(data){ 
                 let msg = "successfully updated recorsd";
                 if(data.affectedRows == 0){
@@ -30,14 +32,15 @@ class SupplierController{
             return res.send({error : "invalid parameters"})
         })
         .catch(err=>{
-            return res.send({error : "invalid parameters"})
+            return res.send({error : err.message})
         })
 
 
     }
     static delete_supplier(req,res){
         let id= parseInt(req.params.id);
-        if(!Number.isInteger(id) || id === 0){
+        console.log(id);
+        if(id === 0){
             return res.status(401).json({error : "bad request"});
         }
         SUPPLIERDAO.set_to_null_products(id)

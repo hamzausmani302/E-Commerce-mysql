@@ -7,6 +7,11 @@ class ProductController{
     static Add_Page(req,res){
         res.sendFile(path.join(__dirname , '../views/ProductPage.html'));
     }
+
+    static get_hot_product(req,res){
+        
+        
+    }
     static update_a_product(req,res){
         let id = parseInt(req.body.PRODUCT_ID);
         let categoryid =  parseInt(req.body.CATEGORYID);

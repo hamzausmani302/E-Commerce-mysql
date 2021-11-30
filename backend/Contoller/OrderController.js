@@ -6,7 +6,16 @@ const Item = require('../Models/OrderItem');
 const {ORDERSDAO , PRODUCTDAO , DBDAO} = require('../Service/dbService');
 const {VERIFY_NUM_INPUT} = require('../Service/HELPERS/SecurityHelper');
 class OrderController{
-    
+    static delete_order_items = (req,res)=>{
+        let promises = []; 
+        let to_delete_values = req.body.ids;
+        for(let i = 0 ; i < to_delete_values.length ; i++){
+            promises.push(ORDERSDAO.Remove_items(to_delete_values[i]));
+        }
+        Promise.all(promises).then((values) => {
+            res.send(values);
+          });
+    }
     static update_a_order(req,res){
         let id = req.params.id;
         if(!VERIFY_NUM_INPUT(id)){
@@ -103,7 +112,7 @@ class OrderController{
 
     }
     
-    static get_all_orders(req,res){
+    static get_all_orders =  (req,res)=>{
         
        
         let promises  = [];

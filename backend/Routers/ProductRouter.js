@@ -9,4 +9,5 @@ router.get('/products' , ProductController.get_all_Products);
 router.get('/products/:id', ProductController.get_a_product);
 router.post('/add',ProductController.add_Product);
 router.post('/update' , ProductController.update_a_product);
+router.get('/hotproducts' , ProductController.get_hot_product);
 module.exports =router;
