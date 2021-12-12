@@ -3,20 +3,22 @@ class Product{
         PRODUCT_NAME=null,
         CATEGORYID=null,
         DESCRIPTION=null,
-        TAGS=null,
-        IMAGESOURCE=null,
+        TAGS=null,       
+        IMAGEURL=null,
         SUPPLIER_ID=null,
         PIECES=null ,
-        ENCODED_ID=null){
+        
+        PRICE = 0){
             this.PRODUCT_ID = PRODUCT_ID;
             this.CATEGORYID = CATEGORYID;
             this.PRODUCT_NAME = PRODUCT_NAME;
             this.DESCRIPTION = DESCRIPTION;
             this.TAGS = TAGS;
-            this.IMAGESOURCE = IMAGESOURCE;
             this.SUPPLIER_ID = SUPPLIER_ID;
+            this.IMAGEURL = IMAGEURL;
             this.PIECES = PIECES;
-            this.ENCODED_ID = ENCODED_ID;
+           
+            this.PRICE = PRICE;
         }
 
 

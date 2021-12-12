@@ -64,7 +64,7 @@ class USERDAO{
       
       const pr = await new Promise(
           (resolve , reject) => {
-            connection.query("INSERT INTO CUSTOMERS VALUES(?,?,?,?,?,?,?,?)" , [userID,Fname,Lname,userEmail,password,address,phoneNo, dateCreated] , (err,result)=>{
+            connection.query("insert into customers set first_name = ? , last_name =? , email = ?, PASSWORD = ? , ADDRESS =? , PHONE_NUMBER = ? , CREATED_AT = ?;" , [Fname,Lname,userEmail,password,address,phoneNo, dateCreated] , (err,result)=>{
               if(err){reject(new Error(err.message))}
               resolve(result);
             })
@@ -104,7 +104,7 @@ class ProductDAO{
   }
   static async Get_Products(){
       const pr = await new Promise((resolve , reject) => {
-        connection.query("SELECT * FROM PRODUCT" , [] , (err,result) => {
+        connection.query("SELECT * FROM PRODUCT P JOIN CATEGORY C ON P.CATEGORYID = C.CATEGORY_ID;" , [] , (err,result) => {
           if(err){reject(new Error(err.message))};
           resolve(result);
         })
@@ -124,16 +124,16 @@ class ProductDAO{
   static async Add_a_Product(product){
       const pr = await new Promise((resolve , reject) => {
           connection.query(`INSERT INTO PRODUCT SET PRODUCT_NAME=? , CATEGORYID=? , 
-          DESCRIPTION=? , TAGS= ? , IMAGESOURCE = ? ,SUPPLIER_ID = ? , PIECES = ? , ENCODED_ID= ?` , [
+          DESCRIPTION=? , TAGS= ? , IMAGEURL = ? ,SUPPLIER_ID = ? , PIECES = ? ` , [
          
             product.PRODUCT_NAME,
             product.CATEGORYID,
             product.DESCRIPTION,
             product.TAGS,
-            product.IMAGESOURCE,
+            product.IMAGEURL,
             product.SUPPLIER_ID,
             product.PIECES,
-            product.ENCODED_ID
+        
           
           ] , (err,result)=>{
             if(err){reject(new Error(err.message))}
@@ -183,6 +183,19 @@ class ProductDAO{
 class CategoryDAO{
   constructor(){
 
+  }
+  static async Get_All_Category_products(id){
+    const pr = await new Promise((resolve, reject) => {
+      
+      
+      connection.query("SELECT * FROM PRODUCT P  JOIN CATEGORY C ON C.CATEGORY_ID=P.CATEGORYID WHERE CATEGORYID = ?", [id], (err, result) => {
+        if (err) {
+          reject(new Error(err.message));
+        }
+        resolve(result);
+      });
+    });
+    return pr;
   }
   static get_instance(){
     return instance;
@@ -604,7 +617,22 @@ class DBDAO{
 
     constructor(){}
     static async update_order(id , updated_data){
-
+     
+        console.log(updated_data);
+        const pr = await new Promise((resolve, reject) => {
+          let {query,ans_arr} = GEN_QUERY("orderdetails" , updated_data , "ORDER_ID");
+          ans_arr.push(id);
+          console.log(query , ans_arr);
+          
+          connection.query(query, ans_arr, (err, result) => {
+            if (err) {
+              reject(new Error(err.message));
+            }
+            resolve(result);
+          });
+        });
+        return pr;
+     
     }
 
     static async set_order_active(id){
@@ -648,7 +676,7 @@ class DBDAO{
 
     static async Add_Order_details(order){
       const pr = new Promise((resolve, reject) => {
-        connection.query("INSERT INTO ORDERDETAILS (AMOUNT,CUSTOMERID,STATUS,DELIVERY_PARTNER) VALUES (?,?,?,?)" , [  order.AMOUNT , order.CUSTOMER_ID , order.STATUS , order.DELIVERY_PARTNER] , (err,result)=>{
+        connection.query("INSERT INTO ORDERDETAILS (AMOUNT,CUSTOMERID,STATUS,DELIVERY_PARTNER) VALUES (?,?,?,?)" , [  order.AMOUNT , order.CUSTOMER_ID , order.STATUS , null] , (err,result)=>{
           if(err){reject(new Error(err.message))}
           resolve(result);
 
@@ -657,19 +685,19 @@ class DBDAO{
     return pr;  
   }
     static async Add_Item_For_Order(order_id , items_list){
-       
+
       //isnert items for the orders into the databse
         const pr = new Promise((resolve, reject) => {
           
           let res_arr = [];
           let query = `INSERT INTO ORDERS_ITEMS (ORDER_ID , PRODUCT_ID , QUANTITY) VALUES `;
-          for (let key in items_list){
+          for (let i=0; i< items_list.length ; i++){
               let q1 = `(? , ? , ? ),`;
               query += q1;
-              res_arr.push(order_id , parseInt(key) , items_list[key]);      
+              res_arr.push(order_id , items_list[i][0], items_list[i][1]);      
           }
           query = query.substring(0, query.length-1)+ ";";
-          
+          console.log(query , res_arr);
           connection.query(query , res_arr , (err,result)=>{
             if(err){reject(new Error(err.message))}
             resolve(result);
@@ -679,7 +707,15 @@ class DBDAO{
       })
       return pr;
     }
-
+    static async get_orders_by_customer(cust_id){
+      const pr = new Promise((resolve, reject) => {
+        connection.query(`SELECT * FROM ORDERDETAILS WHERE CUSTOMERID =?` , [cust_id] , (err,result)=>{
+          if(err){reject(new Error(err.message))}
+          resolve(result);
+        })
+    })
+    return pr;
+    }
     static async get_orders_by_id(order_id){
       const pr = new Promise((resolve, reject) => {
         connection.query(`SELECT * FROM ORDERDETAILS WHERE ORDER_ID =?` , [order_id] , (err,result)=>{

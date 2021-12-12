@@ -5,9 +5,9 @@ const CategoryController= require('../Contoller/CategoryController.js')
 const router = express.Router();
 dotenv.config();
 
-router.get('/category' , CategoryController.get_all_Category);
-router.get('/category/:id', CategoryController.get_a_Category);
-
+router.get('/' , CategoryController.get_all_Category);
+router.get('/:id', CategoryController.get_a_Category);
+router.get('/products/:id',CategoryController.get_cat_products)
 
 
 module.exports =router;

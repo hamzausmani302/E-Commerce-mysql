@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 dotenv.config();
 const User= require('../Contoller/UserController.js')
+const Order = require('../Contoller/OrderController.js');
 const router = express.Router();
 // const DB = require('../Service/dbService');
 
@@ -16,10 +17,9 @@ const router = express.Router();
 //     const resp= DB.get_all().then((data)=>{return res.json(data)});
     
 // })
-router.get('/login' , User.SignInPage);
+
 router.post('/login' , User.UserLogin);
-router.get('/signup' , User.SignupPage);
 router.post('/signup',User.Signup);
-
-
+router.post('/order/add', Order.add_order  );
+router.get('/orders/:id',Order.get_customer_order)
 module.exports = router;

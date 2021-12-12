@@ -8,12 +8,18 @@ const ProductRouter  = require('./Routers/ProductRouter');
 const CategoryRouter = require('./Routers/CategoryRouter');
 
 const App = express();
+
 App.set('views', path.join(__dirname, 'views'))
 App.set('view engine', 'ejs')
 dotenv.config()
 App.use(express.json());
 App.use(express.urlencoded({extended : true}));
-App.use(cors());
+App.use(cors(
+    {
+        origin: '*',
+        optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+      }
+));
 
 App.use("/administrator",Adminrouter);
 App.use("/api/v1/user" , UserRouter);

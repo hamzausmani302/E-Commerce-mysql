@@ -1,5 +1,5 @@
 const path = require('path');
-const {HASH , SIGN , COMPARE_HASH}=require('../Service/HELPERS/SecurityHelper.js');
+const {HASH , SIGN,USER_SIGN,VERIFY_USER , COMPARE_HASH,VERIFY_NUM_INPUT}=require('../Service/HELPERS/SecurityHelper.js');
 const {USERDAO} = require('../Service/dbService');
 class UserController{
 
@@ -26,10 +26,11 @@ class UserController{
                         }
                         res.setHeader('Content-Length',JSON.stringify(data).length );
                         res.setHeader('Content-Location'  , '/');
-                        const token = SIGN(data[0]); 
+                        const token = USER_SIGN(data[0]); 
                         res.setHeader('Authorization' , `Bearer ${token}`);
-                        res.setHeader('set-Cookie' , `Token= ${token};Max-Age=18000`);
-                       
+                        res.setHeader('set-Cookie' , `userToken= ${token};Max-Age=18000;path='\'`);
+                        res.setHeader('set-Cookie' , `userToken= ${token};Max-Age=18000`);
+                        
                         
                         return res.status(200).send({data: data , Token : token});
                         
@@ -51,7 +52,7 @@ class UserController{
     }
 
     static Signup(req , res){
-
+        
         const userID=req.body.CUSTOMER_ID
         const Fname=req.body.FIRST_NAME
         const Lname=req.body.LAST_NAME
@@ -60,8 +61,8 @@ class UserController{
         const address= req.body.address
         const phoneNo= req.body.PHONE_NUMBER
         const created_At = new Date();    
+        console.log(Fname , Lname , userEmail , password);
         res.setHeader('Content-Type', 'application/json');
-        
         var day = ("0" + created_At.getDate()).slice(-2);
         var month = ("0" + (created_At.getMonth() + 1)).slice(-2);
         var year = created_At.getFullYear();
@@ -77,9 +78,9 @@ class UserController{
                 console.log(data);
                 if(data.affectedRows > 0){
                     USERDAO.Login(userEmail , hash).then(data1=>{
-                            const token  = SIGN(data1);
-                            res.setHeader('Set-Cookie' ,  `token=${token};Max-Age=18000`)
-                            return res.status(200).send({result :"signup successful" , data : data1 , token : token})
+                            const token  = USER_SIGN(data1);
+                            res.setHeader('Set-Cookie' ,  `token=${token};Max-Age=18000;path='/'`)
+                            return res.status(200).send({result :"signup successful" , data : data1 , Token : token})
                     }).catch(err=>{return res.status(404).send({error : `Internal server error : ${err.message}`})})
                    
                 }

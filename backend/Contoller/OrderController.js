@@ -24,6 +24,7 @@ class OrderController{
         let nid = Number(id);
         //converted to a number and checfked
         let update_data = req.body.data;
+        
         //fetch body objects
         //send to db to save changes
         ORDERSDAO.update_order(nid , update_data)
@@ -39,7 +40,7 @@ class OrderController{
             return res.json({error : "invalid parameters",  message : "invalid parameters"});
         })
         .catch(err=>{
-            return res.json({error : "invalid parameters",message : "invalid parameters"});
+            return res.json({error : "invalid parameters",message : err.message});
         })
 
     }   
@@ -52,6 +53,7 @@ class OrderController{
         let amount = req.body.amount;
         let cart_items = req.body.cart;
         let order = new Order(0 ,  id , shipperid , amount || 100   );
+        console.log(order);
         ORDERSDAO.Add_Order_details(order)
         .then(data=>{
             if(data.affectedRows > 0){
@@ -111,7 +113,35 @@ class OrderController{
        .catch(err=>{res.send({error : err.message})})
 
     }
-    
+    static get_customer_order = (req,res)=>{
+        let id = parseInt(req.params.id);
+        let promises  = [];
+        
+        ORDERSDAO.get_orders_by_customer(id)
+       .then(data=>{
+        console.log(data);   
+        if(data.length > 0){
+               
+                data.forEach(element => {
+
+                      promises.push(ORDERSDAO.Get_All_Items(element.ORDER_ID));
+                  
+                 
+              });      
+              
+              Promise.all(promises).then((values) => {
+                for(let i =0 ; i < values.length ;i++){
+                     data[i].items=  values[i];
+                }
+                res.send(data);
+              });
+
+           }else{
+               res.send("no orders to display");
+           }
+         })
+       .catch(err=>{res.send({error : err.message})})
+    }
     static get_all_orders =  (req,res)=>{
         
        

@@ -105,7 +105,7 @@ class AdminController{
                             throw new Error("Invalid Username or Password");
                         }
                         res.setHeader('Content-Length',JSON.stringify(data).length );
-                        res.setHeader('Content-Location'  , '/');
+                        res.setHeader('Content-Location'  , '/administrator');
                         const token = SIGN(data[0]); 
                         res.setHeader('Authorization' , `Bearer ${token}`);
                         res.setHeader('set-Cookie' , `Token= ${token};Max-Age=18000`);
