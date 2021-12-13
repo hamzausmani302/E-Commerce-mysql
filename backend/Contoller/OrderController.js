@@ -3,7 +3,8 @@
 const path = require('path');
 const Order = require('../Models/Order');
 const Item = require('../Models/OrderItem');
-const {ORDERSDAO , PRODUCTDAO , DBDAO} = require('../Service/dbService');
+const moment = require('moment');
+const {ORDERSDAO , TRANSACTIONSDAO} = require('../Service/dbService');
 const {VERIFY_NUM_INPUT} = require('../Service/HELPERS/SecurityHelper');
 class OrderController{
     static delete_order_items = (req,res)=>{
@@ -52,38 +53,57 @@ class OrderController{
         let shipperid = req.body.shipper_id;
         let amount = req.body.amount;
         let cart_items = req.body.cart;
-        let order = new Order(0 ,  id , shipperid , amount || 100   );
-        console.log(order);
+
+        const date = new Date();
+        let day = String(date.getDate());
+        let month = String(date.getMonth());
+        if (day.length < 2) {
+          day = "0" + day;
+        }
+        if (month.length < 2) {
+          month = "0" + month;
+        }
+
+        let year = date.getFullYear();
+        const final = year + "-" + month + "-" + day;
+
+        let transaction = req.body.transaction;
+        let order = new Order(0 ,  id , shipperid , amount  );
+        console.log(order,transaction);
         ORDERSDAO.Add_Order_details(order)
         .then(data=>{
             if(data.affectedRows > 0){
                 let insertId = data.insertId;
                 order.ORDER_ID = insertId;
-                let success = false;
-                let affected = 0;
-                ORDERSDAO.Add_Item_For_Order(insertId , cart_items)
-                .then(data1=>{
-                    console.log(data1);
-                    if(data1.affectedRows > 0){
-                        success = true;
-                        affected = data1.affectedRows;
-                        return res.status(200).send({success : success, rowsUpdated : affected})
-                    }else{
-                        throw new Error("Error adding record");
-                    }
-                    
-                })
-                .catch(err1=>{
-                    res.status(500).send({error : err1.message})
-                })
+               
+                if(transaction){
+              
+
+                let pr =ORDERSDAO.Add_Item_For_Order(insertId , cart_items)
                 
+                let pr1 = TRANSACTIONSDAO.Add_Transactions(insertId ,id,amount, transaction,date)
+                Promise.all([pr,pr1]).then((data1)=>{
+                    res.status(200).json(data1);
+                }
+            
+                ).catch(err=>{
+                    return res.send({error : err.message})
+                })
+            }else{
+                ORDERSDAO.Add_Item_For_Order(insertId , cart_items).then(data2=>{
+                    res.status(200).json(data2);
+                })
+            }
             }
            
             
         })
         .catch(err=>{
             res.status(500).send({error : err.message})
-        })        
+        })   
+        
+        
+
     }
     
 

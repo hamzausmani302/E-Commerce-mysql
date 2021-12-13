@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const User= require('../Contoller/UserController.js')
 const Order = require('../Contoller/OrderController.js');
+const { VALIDATE_TRANSACTION } = require('../Service/MiddleWares/ValidateTransaction.js');
 const router = express.Router();
 // const DB = require('../Service/dbService');
 
@@ -20,6 +21,6 @@ const router = express.Router();
 
 router.post('/login' , User.UserLogin);
 router.post('/signup',User.Signup);
-router.post('/order/add', Order.add_order  );
+router.post('/order/add',VALIDATE_TRANSACTION, Order.add_order  );
 router.get('/orders/:id',Order.get_customer_order)
 module.exports = router;

@@ -814,18 +814,21 @@ class TransactionsDAO {
 
   // TODO-CHECK: IN THE BELOW FUNCTION USERID AND ORDERID WILL BE RECEIVED SO NO NEED TO INSERT
   
-static async Add_Transactions(transaction) {
+static async Add_Transactions(id,custid ,amount , transaction,date) {
     
     const pr = await new Promise((resolve, reject) => {
       console.log(transaction)
       connection.query(
-        "INSERT INTO TRANSACTIONS (USER_ID, AMOUNT , ORDER_ID, PAYMENT_METHOD,TRANSACTION_AT) VALUES (?,?,?,?,?)",
+        "INSERT INTO TRANSACTIONS (USER_ID, AMOUNT , ORDER_ID, PAYMENT_METHOD,TRANSACTION_AT,CARD_NUMBER,CARD_PIN,CARD_EXPIRY_DATE) VALUES (?,?,?,?,?,?,?,?)",
         [
-          1,
-          100,
-          38,
-          'cash',
-          '2021-12-01'
+          custid,
+          amount,
+          id,
+          'CARD',
+          date,
+          transaction.card_number,
+          transaction.pin,
+          transaction.expiry
         ],
         (err, result) => {
           console.log(result);
