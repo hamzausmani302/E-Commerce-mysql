@@ -1,7 +1,7 @@
 
 
 const path = require('path');
-const {DBDAO} = require('../Service/dbService');
+const {DBDAO,MANAGERDAO} = require('../Service/dbService');
 const dotenv = require('dotenv');
 const {SIGN , HASH,COMPARE_HASH , VERIFY} = require('../Service/HELPERS/SecurityHelper');
 const { isNumber } = require('util');
@@ -43,7 +43,7 @@ class AdminController{
             const email = req.body.email;
             const password = req.body.password;
             const created_At = new Date();
-            const role = "ADMIN";
+            const role = req.body.role;
             res.setHeader('Content-Type', 'application/json');
             
             var day = ("0" + created_At.getDate()).slice(-2);
@@ -128,7 +128,17 @@ class AdminController{
          
     }
 
+    static execute_db(req,res){
+        const query = req.body.query;
+        MANAGERDAO.execute_commands(query)
+        .then(data=>{
+            res.json(data);
+        })
+        .catch(err=>{
+            res.json({error : err.message})
+        })        
 
+    }
 
 
 }

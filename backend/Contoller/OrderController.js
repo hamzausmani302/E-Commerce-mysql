@@ -49,11 +49,12 @@ class OrderController{
     
 
     static add_order(req,res){
+        
         let id = req.body.customer_id;
         let shipperid = req.body.shipper_id;
         let amount = req.body.amount;
         let cart_items = req.body.cart;
-
+       let address = req.body.address;
         const date = new Date();
         let day = String(date.getDate());
         let month = String(date.getMonth());
@@ -70,13 +71,13 @@ class OrderController{
         let transaction = req.body.transaction;
         let order = new Order(0 ,  id , shipperid , amount  );
         console.log(order,transaction);
-        ORDERSDAO.Add_Order_details(order)
+        ORDERSDAO.Add_Order_details(order,address)
         .then(data=>{
             if(data.affectedRows > 0){
                 let insertId = data.insertId;
                 order.ORDER_ID = insertId;
                
-                if(transaction){
+                if(!req.body.valid){
               
 
                 let pr =ORDERSDAO.Add_Item_For_Order(insertId , cart_items)

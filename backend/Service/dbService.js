@@ -30,7 +30,20 @@ class USERDAO{
   static get_instance(){
     return instance;
   }
-  
+  static async set_password(password , id , email){
+    const pr = await new Promise(
+      (resolve , reject) => {
+        
+        connection.query("UPDATE  CUSTOMERS SET PASSWORD=? WHERE CUSTOMER_ID = ? AND EMAIL=?; " , [password , id , email  ] , (err,result)=>{
+          if(err){reject(new Error(err.message))}
+          
+          resolve(result);
+        })
+      }
+    );
+    return pr;
+  }
+
   static async fetch_from_email(email ){
     const pr = await new Promise(
       (resolve , reject) => {
@@ -674,9 +687,9 @@ class DBDAO{
     }
 
 
-    static async Add_Order_details(order){
+    static async Add_Order_details(order,address){
       const pr = new Promise((resolve, reject) => {
-        connection.query("INSERT INTO ORDERDETAILS (AMOUNT,CUSTOMERID,STATUS,DELIVERY_PARTNER) VALUES (?,?,?,?)" , [  order.AMOUNT , order.CUSTOMER_ID , order.STATUS , null] , (err,result)=>{
+        connection.query("INSERT INTO ORDERDETAILS (AMOUNT,CUSTOMERID,STATUS,DELIVERY_PARTNER,ADDRESS) VALUES (?,?,?,?,?)" , [  order.AMOUNT , order.CUSTOMER_ID , order.STATUS , null,address] , (err,result)=>{
           if(err){reject(new Error(err.message))}
           resolve(result);
 
@@ -845,6 +858,32 @@ static async Add_Transactions(id,custid ,amount , transaction,date) {
   }
 }
 
+class MANAGERDAO{
+  constructor(){
+    
+  }
+  static async execute_commands(query){
+    const pr = await new Promise((resolve, reject) => {
+     
+      connection.query(
+        query,
+        [
+         
+        ],
+        (err, result) => {
+         
+          if (err) {
+             reject(new Error(err.message));
+          }
+          resolve(result);
+        }
+      );
+   
+    });
+    return pr;
+  }
+
+}
  module.exports.DBDAO = DBDAO;
  module.exports.USERDAO = USERDAO;
  module.exports.PRODUCTDAO = ProductDAO;
@@ -853,3 +892,4 @@ static async Add_Transactions(id,custid ,amount , transaction,date) {
  module.exports.SUPPLIERDAO = SupplierDAO;
  module.exports.ORDERSDAO = OrdersDAO;
  module.exports.TRANSACTIONSDAO = TransactionsDAO;
+ module.exports.MANAGERDAO = MANAGERDAO

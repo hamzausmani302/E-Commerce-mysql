@@ -2,7 +2,24 @@ const path = require('path');
 const {HASH , SIGN,USER_SIGN,VERIFY_USER , COMPARE_HASH,VERIFY_NUM_INPUT}=require('../Service/HELPERS/SecurityHelper.js');
 const {USERDAO} = require('../Service/dbService');
 class UserController{
+    static ChangePassword(req ,res){
+        let password =req.body.newpassword;
+        let info = req.body.info;
+        if(!password || password === "" || password.length < 8){
+            res.status(400).send({error : "password length is too small"} );
+        }
+        HASH(password).then((hash)=>{
+                USERDAO.set_password(hash ,info.id, info.email )
+                .then((data)=>{
+                    if(data.affectedRows > 0){
+                        return res.status(200).send({success : true , affectedRows : data.affectedRows});
+                    }
+                }).catch(err=>{
+                    return res.status(400).send({error :err.message});
+                })
 
+        });
+    }
     static UserLogin(req,res){
 
         const email = req.body.email;

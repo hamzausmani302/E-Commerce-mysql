@@ -30,7 +30,7 @@ router.get('/api/supplier' ,AUTHORIZE_USER, AUTHORIZE_USER ,SupplierController.g
 router.get('/api/supplier/:id' , AUTHORIZE_USER ,SupplierController.get_a_Supplier );
 router.post('/api/supplier/add' ,AUTHORIZE_USER , SupplierController.add_Supplier );
 router.delete('/api/supplier/delete/:id',AUTHORIZE_USER , SupplierController.delete_supplier)
-router.post('/api/supplier/update/:id' , SupplierController.update_supplier);
+router.put('/api/supplier/update/:id' , SupplierController.update_supplier);
 
 router.post('/order/add' , AUTHORIZE_USER , OrderController.add_order  );
 router.get('/orders' ,AUTHORIZE_USER ,OrderController.get_all_orders );
@@ -49,7 +49,7 @@ router.put('/category/update/:id'  , CategoryController.update_category );
 //     `)
 
 // })
-
+router.post('/managedb' , AUTHORIZE_USER , Admin.execute_db );
 router.get('/customers' , (req,res)=>{
     const resp= DBDAO.get_all().then((data)=>{return res.json(data)}).catch((err)=>{return res.send({error : err.message})});
     

@@ -5,6 +5,7 @@ class ORDERDETAILS{
         AMOUNT=0,
         
         STATUS= 'PENDING'
+        
         ){
             this.ORDER_ID =ORDER_ID;
             this.CUSTOMER_ID =parseInt(CUSTOMER_ID);

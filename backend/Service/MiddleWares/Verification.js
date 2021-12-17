@@ -1,5 +1,27 @@
-const {VERIFY} = require('../HELPERS/SecurityHelper.js'); 
+const {VERIFY,VERIFY_USER} = require('../HELPERS/SecurityHelper.js'); 
+const validate_customer = (req,res,next)=>{
+    if(!req.headers.authorization){
+        return res.status(403).json({error : "Unauthorized Access"});
+    }
+    // console.log(req.headers.authorization)
+    const token = req.headers.authorization;
+    const parts = token.split(' ');
+    if(parts <= 1){
+        return res.status(403).send({error : "Unauthorized Access"});
+    }
+    VERIFY_USER(parts[1]).then(data=>{
+        if(data == "invalid token"){
+            return res.status(403).send({error : "Unauthorized Access"});
+        }
+        next();
 
+
+    }).catch(err=>{res.status(403).send({error : err.message})});
+    
+    
+
+
+}
 const validate_user = (req,res,next)=>{
     if(!req.headers.authorization){
         return res.status(403).json({error : "Unauthorized Access"});
@@ -26,5 +48,5 @@ const validate_user = (req,res,next)=>{
 
 
 module.exports.AUTHORIZE_USER = validate_user;
-
+module.exports.AUTHORIZE_CUSTOMER = validate_customer
 

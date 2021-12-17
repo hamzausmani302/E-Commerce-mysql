@@ -63,7 +63,7 @@ const JWTAUTH_SIGN_USERS = (payload)=>{
     }, process.env.USER_JWT_KEY, { expiresIn: '3h' });
     return token;
 }
-const VERIFY_USER = (payload)=>{
+const VERIFY_USER = (token)=>{
     let pr = new Promise((resolve, reject)=>{
         jwt.verify(token, process.env.USER_JWT_KEY , function(err, decoded) {
             if(err){reject(err)}

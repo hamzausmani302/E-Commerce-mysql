@@ -4,6 +4,8 @@ dotenv.config();
 const User= require('../Contoller/UserController.js')
 const Order = require('../Contoller/OrderController.js');
 const { VALIDATE_TRANSACTION } = require('../Service/MiddleWares/ValidateTransaction.js');
+const { VERIFY_USER } = require('../Service/HELPERS/SecurityHelper.js');
+const {AUTHORIZE_CUSTOMER} = require('../Service/MiddleWares/Verification');
 const router = express.Router();
 // const DB = require('../Service/dbService');
 
@@ -22,5 +24,6 @@ const router = express.Router();
 router.post('/login' , User.UserLogin);
 router.post('/signup',User.Signup);
 router.post('/order/add',VALIDATE_TRANSACTION, Order.add_order  );
-router.get('/orders/:id',Order.get_customer_order)
+router.get('/orders/:id',Order.get_customer_order);
+router.put('/change-password',AUTHORIZE_CUSTOMER, User.ChangePassword)
 module.exports = router;
